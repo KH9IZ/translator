@@ -6,39 +6,6 @@ import peewee
 
 bot = telebot.TeleBot(token)
 
-db = peewee.SqliteDatabase("db.sqlite")
-
-
-class User(peewee.Model):
-    user_id = peewee.IntegerField()
-    lang = peewee.TextField()
-
-    class Meta:
-        database = db
-        db_table = 'users'
-
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    #sent = bot.send_message(message.chat.id, 'Добро пожаловать в переводчик!')
-    #user = User(user_id=228, lang='kek')
-    #user.save()
-    bot.register_next_step_handler(sent, change_language)
-
-
-@bot.message_handler(commands=['lang'])
-def change_language(message):
-    sent = bot.send_message(message.chat.id,
-                     'Введите язык на который нужно перевести в сокращении (например en или de): ')
-    bot.register_next_step_handler(sent, changing)
-    pass
-
-
-def changing(message):
-    bot.send_message(message.chat.id, 'Изменил язык на '+message.text)
-    pass
-
-
 
 @bot.message_handler(content_types=['text'])
 def translate(message):
