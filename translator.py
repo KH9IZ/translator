@@ -7,27 +7,6 @@ from config import *
 bot = telebot.TeleBot(token)
 
 
-def translate(word):
-    text = word
-    lang = 'ru'
-    for i in text:
-        if ((i > 'a') and (i < 'z')) or ((i > 'A') and (i < 'Z')):
-            lang = 'ru'
-        else:
-            lang = 'en'
-        break
-    print(lang+" faweg")
-    args = {'key': key, 'text': text, 'lang': lang}
-    enc_args = urllib.parse.urlencode(args)
-    response = urllib.request.urlopen('https://translate.yandex.net/api/v1.5/tr/translate?' + enc_args)
-    xml_file = response.read()
-    xml_file = xml_file.decode('utf-8')
-    dom = xml.dom.minidom.parseString(xml_file)
-    dom.normalize()
-    text = dom.getElementsByTagName("text")[0]
-    return text.childNodes[0].nodeValue
-
-
 @bot.inline_handler(func=lambda query: len(query.query) > 0)
 def query_answer(query):
     text = query.query
@@ -55,7 +34,7 @@ def query_answer(query):
     bot.answer_inline_query(query.id, [ans])
 
 
-@bot.message_handler(content_types=['text'])
+@bot.message_handler(func=lambda message: message.text not in ('ru', 'en', 'de'))
 def translate(message):
     text = message.text
     lang = 'ru'
@@ -65,7 +44,7 @@ def translate(message):
         else:
             lang = 'en'
         break
-    print(lang)
+    print(message)
     args = {'key': key, 'text': text, 'lang': lang}
     enc_args = urllib.parse.urlencode(args)
     response = urllib.request.urlopen('https://translate.yandex.net/api/v1.5/tr/translate?' + enc_args)
