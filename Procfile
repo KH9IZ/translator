@@ -1,1 +1,1 @@
-web: python translator.py
+worker: python translator.py
